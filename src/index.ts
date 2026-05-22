@@ -21,9 +21,21 @@ import { Achievement } from './models/Achievement.model';
 const app = express();
 
 // Middlewares
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://rahulbuilds-dev-gamma.vercel.app',
+  'https://rahulbuilds.dev',
+];
+
+if (process.env.ALLOWED_ORIGINS) {
+  const customOrigins = process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim());
+  allowedOrigins.push(...customOrigins);
+}
+
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
