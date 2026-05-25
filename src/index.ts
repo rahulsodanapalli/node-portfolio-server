@@ -20,22 +20,37 @@ import { Achievement } from './models/Achievement.model';
 
 const app = express();
 
+// Disable ETags to prevent 304 Not Modified responses
+app.set('etag', false);
+
 // Middlewares
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+  next();
+});
+
+// ✅ Dynamic CORS — no hardcoded URLs, controlled via ALLOWED_ORIGINS env var
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://rahulbuilds-dev-gamma.vercel.app',
-  'https://rahulbuilds.dev',
+  ...(process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+    : []),
 ];
-
-if (process.env.ALLOWED_ORIGINS) {
-  const customOrigins = process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim());
-  allowedOrigins.push(...customOrigins);
-}
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked: ${origin} is not allowed`));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
