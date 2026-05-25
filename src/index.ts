@@ -20,7 +20,18 @@ import { Achievement } from './models/Achievement.model';
 
 const app = express();
 
+// Disable ETags to prevent 304 Not Modified responses
+app.set('etag', false);
+
 // Middlewares
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+  next();
+});
+
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
