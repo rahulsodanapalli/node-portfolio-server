@@ -8,6 +8,12 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
+  // Handle CORS blocked error cleanly without throwing a 500
+  if (err.message && err.message.startsWith('CORS blocked')) {
+    console.warn(`⚠️ CORS Blocked: ${err.message}`);
+    return void sendError(res, err.message, 403);
+  }
+
   console.error('💥 Runtime Server Error:', err);
 
   const statusCode = err.statusCode || 500;
