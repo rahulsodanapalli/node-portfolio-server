@@ -22,8 +22,8 @@ export const sendTokenCookie = (res: Response, email: string): string => {
   const cookieOptions = {
     httpOnly: true,
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
+    secure: true,
+    sameSite: 'none' as const,
   };
 
   res.cookie('admin_token', token, cookieOptions);
@@ -33,7 +33,7 @@ export const sendTokenCookie = (res: Response, email: string): string => {
 export const clearTokenCookie = (res: Response): void => {
   res.clearCookie('admin_token', {
     httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
+    secure: true,
+    sameSite: 'none' as const,
   });
 };

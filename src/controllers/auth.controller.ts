@@ -23,9 +23,9 @@ export const login = async (
     }
 
     // Sign JWT and set in HttpOnly cookie
-    sendTokenCookie(res, email);
+    const token = sendTokenCookie(res, email);
 
-    return sendSuccess(res, { isAdmin: true, email }, 'Logged in successfully');
+    return sendSuccess(res, { isAdmin: true, email, token }, 'Logged in successfully');
   } catch (error) {
     next(error);
   }

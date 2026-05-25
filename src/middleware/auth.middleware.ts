@@ -19,7 +19,15 @@ export const protectAdmin = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const token = req.cookies?.admin_token;
+    // Try cookie first, then fall back to Authorization Bearer header
+    let token = req.cookies?.admin_token;
+
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
+    }
 
     if (!token) {
       return sendError(res, 'Authentication required. No session found.', 401);
