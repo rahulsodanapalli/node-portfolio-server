@@ -32,21 +32,25 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ Dynamic CORS — no hardcoded URLs, controlled via ALLOWED_ORIGINS env var
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://rahulbuilds-dev-gamma.vercel.app',
-  'https://rahulbuilds.dev',
+  ...(process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+    : []),
 ];
-
-if (process.env.ALLOWED_ORIGINS) {
-  const customOrigins = process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim());
-  allowedOrigins.push(...customOrigins);
-}
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked: ${origin} is not allowed`));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
