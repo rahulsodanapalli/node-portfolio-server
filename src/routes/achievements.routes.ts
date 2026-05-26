@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getAchievements, createAchievement, updateAchievement, deleteAchievement } from '../controllers/achievements.controller';
 import { protectAdmin, requireAdminWrite } from '../middleware/auth.middleware';
 import { validateBody } from '../middleware/validate.middleware';
-import { achievementValidationSchema } from '../validators/skill.validator';
+import { achievementValidationSchema } from '../validators';
 
 const router = Router();
 

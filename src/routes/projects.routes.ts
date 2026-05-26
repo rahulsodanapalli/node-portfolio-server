@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getProjects, createProject, updateProject, deleteProject } from '../controllers/projects.controller';
 import { protectAdmin, requireAdminWrite } from '../middleware/auth.middleware';
 import { validateBody } from '../middleware/validate.middleware';
-import { projectValidationSchema } from '../validators/project.validator';
+import { projectValidationSchema } from '../validators';
 
 const router = Router();
 

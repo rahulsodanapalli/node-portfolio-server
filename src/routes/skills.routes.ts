@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getSkills, createSkill, updateSkill, deleteSkill } from '../controllers/skills.controller';
 import { protectAdmin, requireAdminWrite } from '../middleware/auth.middleware';
 import { validateBody } from '../middleware/validate.middleware';
-import { skillValidationSchema } from '../validators/skill.validator';
+import { skillValidationSchema } from '../validators';
 
 const router = Router();
 

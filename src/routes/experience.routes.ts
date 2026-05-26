@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getExperiences, createExperience, updateExperience, deleteExperience } from '../controllers/experience.controller';
 import { protectAdmin, requireAdminWrite } from '../middleware/auth.middleware';
 import { validateBody } from '../middleware/validate.middleware';
-import { experienceValidationSchema } from '../validators/skill.validator';
+import { experienceValidationSchema } from '../validators';
 
 const router = Router();
 
