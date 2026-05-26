@@ -12,6 +12,11 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email('ADMIN_EMAIL must be a valid email'),
   ADMIN_PASSWORD: z.string().min(6, 'ADMIN_PASSWORD must be at least 6 characters long'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.string().transform((val) => val ? parseInt(val, 10) : undefined).optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  RECEIVER_EMAIL: z.string().email('RECEIVER_EMAIL must be a valid email').default('rahulsodanapalli@gmail.com'),
 });
 
 const parsed = envSchema.safeParse(process.env);
